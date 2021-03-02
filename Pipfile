@@ -12,6 +12,7 @@ flake8 = "~=3.8"
 httpretty = "~=1.0"
 mypy = "==0.812"
 pytest = "~=6.2"
+pytest-cov = "~=2.11"
 
 [requires]
 python_version = "3.9"
