@@ -29,7 +29,7 @@ mypy: docker-build
 static-check: flake8 mypy
 
 .PHONY: fmt-check
-fmt-check:
+fmt-check: docker-build
 	@$(DOCKER_RUN) black --line-length 120 --check .
 
 .PHONY: fmt
