@@ -1,7 +1,7 @@
 DOCKER_RUN = docker run  --interactive --rm bonjoursoftware/cryptocli:local
 
 .PHONY: all
-all: fmt test static-check
+all: fmt-check test static-check
 
 .PHONY: docker-build
 docker-build:
