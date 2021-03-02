@@ -28,6 +28,10 @@ mypy: docker-build
 .PHONY: static-check
 static-check: flake8 mypy
 
+.PHONY: fmt-check
+fmt-check:
+	@pipenv run black --line-length 120 --check .
+
 .PHONY: fmt
 fmt:
 	@pipenv run black --line-length 120 .
