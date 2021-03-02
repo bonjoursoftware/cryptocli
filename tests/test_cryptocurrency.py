@@ -28,19 +28,19 @@ from cryptocli.cryptocurrency import Cryptocurrency
 from cryptocli.exceptions import CryptoCLIException
 
 
-class TestCryptocurrency(TestCase):
+class TestLastTradePrice(TestCase):
     @httpretty.activate
-    def test_last_trade_price_known_symbol(self) -> None:
+    def test_known_symbol(self) -> None:
         httpretty.register_uri(
             method=httpretty.GET,
             uri="https://api.blockchain.com/v3/exchange/tickers/BTC-USD",
             body='{"symbol": "BTC-USD", "price_24h": 57400.6, "volume_24h": 1010.255527, "last_trade_price": 54864.4}',
             content_type="text/json",
         )
-        assert 54864.4 == Cryptocurrency("BTC-USD").last_trade_price()
+        assert {"symbol": "BTC-USD", "last_trade_price": 54864.4} == Cryptocurrency().last_trade_price("BTC-USD")
 
     @httpretty.activate
-    def test_last_trade_price_unknown_symbol(self) -> None:
+    def test_unknown_symbol(self) -> None:
         httpretty.register_uri(
             method=httpretty.GET,
             uri="https://api.blockchain.com/v3/exchange/tickers/BTC-XXX",
@@ -49,4 +49,28 @@ class TestCryptocurrency(TestCase):
             status=500,
         )
         with raises(CryptoCLIException):
-            Cryptocurrency("BTC-XXX").last_trade_price()
+            Cryptocurrency().last_trade_price("BTC-XXX")
+
+
+class TestSymbols(TestCase):
+    @httpretty.activate
+    def test_list(self) -> None:
+        httpretty.register_uri(
+            method=httpretty.GET,
+            uri="https://api.blockchain.com/v3/exchange/symbols",
+            body='{"LTC-BTC": {"id":23}, "XLM-EUR": {"id": 11}, "BTC-GBP": {"id": 35}, "LTC-EUR": {"id": 21}}',
+            content_type="text/json",
+        )
+        assert {1: "BTC-GBP", 2: "LTC-BTC", 3: "LTC-EUR", 4: "XLM-EUR"} == Cryptocurrency().symbols()
+
+    @httpretty.activate
+    def test_can_not_list(self) -> None:
+        httpretty.register_uri(
+            method=httpretty.GET,
+            uri="https://api.blockchain.com/v3/exchange/symbols",
+            body='{"error": "Internal Server Error"}',
+            content_type="text/json",
+            status=500,
+        )
+        with raises(CryptoCLIException):
+            Cryptocurrency().symbols()

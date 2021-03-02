@@ -19,21 +19,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/cryptocli/blob/master/LICENSE
-from dataclasses import dataclass
 from requests import get
+from requests import Response
 from requests.exceptions import RequestException
+from typing import Any, Dict, Callable
 
 from cryptocli.exceptions import CryptoCLIException
 
 
-@dataclass
 class Cryptocurrency:
-    symbol: str
+    def last_trade_price(self, symbol: str) -> Dict[str, Any]:
+        return self._get(
+            url=f"https://api.blockchain.com/v3/exchange/tickers/{symbol}",
+            read_response=lambda response: {
+                "symbol": symbol,
+                "last_trade_price": float(response.json()["last_trade_price"]),
+            },
+            error_msg=f"unable to fetch {symbol} last trade price",
+        )
 
-    def last_trade_price(self) -> float:
+    def symbols(self) -> Dict[int, str]:
+        return self._get(
+            url="https://api.blockchain.com/v3/exchange/symbols",
+            read_response=lambda response: {
+                idx: symbol for idx, symbol in enumerate(sorted([symbol for symbol in response.json().keys()]), 1)
+            },
+            error_msg="unable to list symbols",
+        )
+
+    def _get(self, url: str, read_response: Callable[[Response], Dict[Any, Any]], error_msg: str) -> Dict[Any, Any]:
         try:
-            response = get(url=f"https://api.blockchain.com/v3/exchange/tickers/{self.symbol}")
+            response = get(url=url)
             response.raise_for_status()
-            return float(response.json()["last_trade_price"])
+            return read_response(response)
         except RequestException as ex:
-            raise CryptoCLIException(f"unable to fetch {self.symbol} last trade price: {ex}") from None
+            raise CryptoCLIException(f"{error_msg}: {ex}") from None
