@@ -9,9 +9,10 @@ docker-build:
 
 .PHONY: test
 test: docker-build
-	@$(DOCKER_RUN) pytest -v \
-		--no-header \
+	@$(DOCKER_RUN) pytest \
+		-v \
 		-p no:cacheprovider \
+		--no-header \
 		--cov=cryptocli \
 		--cov-fail-under=100 \
 		--no-cov-on-fail
