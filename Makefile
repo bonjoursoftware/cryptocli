@@ -30,7 +30,7 @@ static-check: flake8 mypy
 
 .PHONY: fmt-check
 fmt-check:
-	@pipenv run black --line-length 120 --check .
+	@$(DOCKER_RUN) black --line-length 120 --check .
 
 .PHONY: fmt
 fmt:
