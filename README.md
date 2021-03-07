@@ -4,4 +4,4 @@
 
 ## CryptoCLI
 
-Bonjour Software's CryptoCLI is a command-line tool that fetches live cryptocurrency prices.
+Bonjour Software's CryptoCLI is a command-line tool that fetches live cryptocurrency prices. Development is in progress...
