@@ -74,3 +74,37 @@ class TestSymbols(TestCase):
         )
         with raises(CryptoCLIException):
             Cryptocurrency().symbols()
+
+
+class TestFindSymbols(TestCase):
+    @httpretty.activate
+    def test_symbols_found(self) -> None:
+        httpretty.register_uri(
+            method=httpretty.GET,
+            uri="https://api.blockchain.com/v3/exchange/symbols",
+            body='{"LTC-BTC": {"id":23}, "XLM-EUR": {"id": 11}, "BTC-GBP": {"id": 35}, "LTC-EUR": {"id": 21}}',
+            content_type="text/json",
+        )
+        assert ["BTC-GBP", "LTC-BTC"] == Cryptocurrency().find_symbols("btc")
+
+    @httpretty.activate
+    def test_no_match(self) -> None:
+        httpretty.register_uri(
+            method=httpretty.GET,
+            uri="https://api.blockchain.com/v3/exchange/symbols",
+            body='{"LTC-BTC": {"id":23}, "XLM-EUR": {"id": 11}, "BTC-GBP": {"id": 35}, "LTC-EUR": {"id": 21}}',
+            content_type="text/json",
+        )
+        assert [] == Cryptocurrency().find_symbols("banana")
+
+    @httpretty.activate
+    def test_can_not_find_symbols(self) -> None:
+        httpretty.register_uri(
+            method=httpretty.GET,
+            uri="https://api.blockchain.com/v3/exchange/symbols",
+            body='{"error": "Internal Server Error"}',
+            content_type="text/json",
+            status=500,
+        )
+        with raises(CryptoCLIException):
+            Cryptocurrency().find_symbols("whatever")
