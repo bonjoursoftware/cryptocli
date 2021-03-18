@@ -1,7 +1,7 @@
 DOCKER_RUN = docker run  --interactive --rm bonjoursoftware/cryptocli:local
 
 .PHONY: all
-all: fmt-check test static-check
+all: fmt-check test static-analysis
 
 .PHONY: docker-build
 docker-build:
@@ -25,8 +25,8 @@ flake8: docker-build
 mypy: docker-build
 	@$(DOCKER_RUN) mypy --strict ./**/*.py
 
-.PHONY: static-check
-static-check: flake8 mypy
+.PHONY: static-analysis
+static-analysis: flake8 mypy
 
 .PHONY: fmt-check
 fmt-check: docker-build
