@@ -7,6 +7,10 @@ all: fmt-check test static-analysis
 docker-build:
 	@docker build -t bonjoursoftware/cryptocli:local . > /dev/null
 
+.PHONY: fmt-check
+fmt-check: docker-build
+	@$(DOCKER_RUN) black --line-length 120 --check .
+
 .PHONY: test
 test: docker-build
 	@$(DOCKER_RUN) pytest \
@@ -17,6 +21,9 @@ test: docker-build
 		--cov-fail-under=100 \
 		--no-cov-on-fail
 
+.PHONY: static-analysis
+static-analysis: flake8 mypy
+
 .PHONY: flake8
 flake8: docker-build
 	@$(DOCKER_RUN) flake8 --max-line-length 120
@@ -24,13 +31,6 @@ flake8: docker-build
 .PHONY: mypy
 mypy: docker-build
 	@$(DOCKER_RUN) mypy --strict ./**/*.py
-
-.PHONY: static-analysis
-static-analysis: flake8 mypy
-
-.PHONY: fmt-check
-fmt-check: docker-build
-	@$(DOCKER_RUN) black --line-length 120 --check .
 
 .PHONY: fmt
 fmt:
