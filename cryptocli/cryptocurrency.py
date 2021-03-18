@@ -19,10 +19,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/cryptocli/blob/master/LICENSE
-from requests import get
-from requests import Response
+from requests import Response, get
 from requests.exceptions import RequestException
-from typing import Any, Dict, Callable
+from typing import Any, Callable, Dict, List
 
 from cryptocli.exceptions import CryptoCLIException
 
@@ -47,7 +46,11 @@ class Cryptocurrency:
             error_msg="unable to list symbols",
         )
 
-    def _get(self, url: str, read_response: Callable[[Response], Dict[Any, Any]], error_msg: str) -> Dict[Any, Any]:
+    def find_symbols(self, symbol: str) -> List[str]:
+        return [match for match in self.symbols().values() if symbol.upper() in match]
+
+    @staticmethod
+    def _get(url: str, read_response: Callable[[Response], Dict[Any, Any]], error_msg: str) -> Dict[Any, Any]:
         try:
             response = get(url=url)
             response.raise_for_status()
