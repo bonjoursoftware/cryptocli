@@ -28,19 +28,23 @@ from cryptocli.exceptions import CryptoCLIException
 
 
 def parse_args() -> None:
-    parser = ArgumentParser(description="fetches live cryptocurrency prices")
+    parser = ArgumentParser(
+        description="Cryptocurrency command-line tool",
+        epilog="https://github.com/bonjoursoftware/cryptocli",
+        prog="docker run bonjoursoftware/cryptocli",
+    )
     parser.set_defaults(func=lambda _: print(parser.format_help()))
 
     subparsers = parser.add_subparsers()
 
-    price_parser = subparsers.add_parser("price")
-    price_parser.add_argument("-s", "--symbol", type=str, help="cryptocurrency symbol", default="BTC-GBP")
-    price_parser.add_argument("-t", "--ticker", type=int, help="ticker interval in seconds", default=300)
-    price_parser.set_defaults(func=watch_last_trade_price)
-
     find_parser = subparsers.add_parser("find")
     find_parser.add_argument("-s", "--symbol", type=str, required=True, help="cryptocurrency symbol")
     find_parser.set_defaults(func=find_symbols)
+
+    price_parser = subparsers.add_parser("price")
+    price_parser.add_argument("-s", "--symbol", type=str, help="cryptocurrency symbol", default="BTC-GBP")
+    price_parser.add_argument("-t", "--ticker", type=int, help="ticker interval in seconds")
+    price_parser.set_defaults(func=watch_last_trade_price)
 
     args = parser.parse_args()
     args.func(args)
@@ -48,9 +52,10 @@ def parse_args() -> None:
 
 def watch_last_trade_price(args: Namespace):
     last_trade_price(args.symbol)
-    crypto_ticker = Event()
-    while not crypto_ticker.wait(args.ticker):
-        last_trade_price(args.symbol)
+    if args.ticker:
+        crypto_ticker = Event()
+        while not crypto_ticker.wait(args.ticker):
+            last_trade_price(args.symbol)
 
 
 def last_trade_price(symbol: str) -> None:
