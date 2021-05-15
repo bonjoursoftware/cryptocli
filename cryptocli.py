@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # CryptoCLI - A Python CLI that fetches live cryptocurrency prices
 #
 # https://github.com/bonjoursoftware/cryptocli
