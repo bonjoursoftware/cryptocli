@@ -1,7 +1,7 @@
-ARG PYTHON_VERSION=3.9.4
+ARG PYTHON_VERSION=3.9.6
 FROM python:${PYTHON_VERSION}-slim-buster as builder
 WORKDIR /cryptocli
-RUN pip install --no-cache-dir pipenv==2020.11.15
+RUN pip install --no-cache-dir pipenv==2021.5.29
 COPY ./Pipfile.lock ./
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv sync
 
