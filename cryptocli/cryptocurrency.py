@@ -40,9 +40,7 @@ class Cryptocurrency:
     def symbols(self) -> Dict[int, str]:
         return self._get(
             url="https://api.blockchain.com/v3/exchange/symbols",
-            read_response=lambda response: {
-                idx: symbol for idx, symbol in enumerate(sorted([symbol for symbol in response.json().keys()]), 1)
-            },
+            read_response=lambda response: {idx: symbol for idx, symbol in enumerate(sorted([symbol for symbol in response.json().keys()]), 1)},
             error_msg="unable to list symbols",
         )
 
