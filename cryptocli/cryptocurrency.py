@@ -28,12 +28,12 @@ from cryptocli.exceptions import CryptoCLIException
 
 
 class Cryptocurrency:
-    def last_trade_price(self, symbol: str) -> Dict[str, Any]:
+    def price(self, symbol: str) -> Dict[str, Any]:
         return self._get(
             url=f"https://duckduckgo.com/js/spice/cryptocurrency/{symbol.split('-')[0]}/{symbol.split('-')[1]}/1",
             read_response=lambda response: {
                 "symbol": symbol,
-                "last_trade_price": float(next(iter(loads(response)["data"]["quote"].values()))["price"]),
+                "price": float(next(iter(loads(response)["data"]["quote"].values()))["price"]),
             },
             error_msg=f"unable to fetch {symbol} last trade price",
         )

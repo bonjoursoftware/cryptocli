@@ -40,23 +40,23 @@ def parse_args() -> None:
     price_parser = subparsers.add_parser("price")
     price_parser.add_argument("-s", "--symbol", type=str, help="cryptocurrency symbol", default="BTC-GBP")
     price_parser.add_argument("-t", "--ticker", type=int, help="ticker interval in seconds")
-    price_parser.set_defaults(func=watch_last_trade_price)
+    price_parser.set_defaults(func=watch_price)
 
     args = parser.parse_args()
     args.func(args)
 
 
-def watch_last_trade_price(args: Namespace):
-    last_trade_price(args.symbol)
+def watch_price(args: Namespace):
+    price(args.symbol)
     if args.ticker:
         crypto_ticker = Event()
         while not crypto_ticker.wait(args.ticker):
-            last_trade_price(args.symbol)
+            price(args.symbol)
 
 
-def last_trade_price(symbol: str) -> None:
+def price(symbol: str) -> None:
     try:
-        print(Cryptocurrency().last_trade_price(symbol))
+        print(Cryptocurrency().price(symbol))
     except CryptoCLIException as ex:
         print(ex)
 
