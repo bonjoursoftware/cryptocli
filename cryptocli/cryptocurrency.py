@@ -21,7 +21,7 @@
 # https://github.com/bonjoursoftware/cryptocli/blob/master/LICENSE
 from requests import Response, get
 from requests.exceptions import RequestException
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict
 
 from cryptocli.exceptions import CryptoCLIException
 
@@ -36,16 +36,6 @@ class Cryptocurrency:
             },
             error_msg=f"unable to fetch {symbol} last trade price",
         )
-
-    def symbols(self) -> Dict[int, str]:
-        return self._get(
-            url="https://api.blockchain.com/v3/exchange/symbols",
-            read_response=lambda response: {idx: symbol for idx, symbol in enumerate(sorted([symbol for symbol in response.json().keys()]), 1)},
-            error_msg="unable to list symbols",
-        )
-
-    def find_symbols(self, symbol: str) -> List[str]:
-        return [match for match in self.symbols().values() if symbol.upper() in match]
 
     @staticmethod
     def _get(url: str, read_response: Callable[[Response], Dict[Any, Any]], error_msg: str) -> Dict[Any, Any]:

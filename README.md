@@ -12,12 +12,6 @@
 
 ## Usage
 
-- find cryptocurrency symbols matching a given pattern:
-
-```shell
-docker run bonjoursoftware/cryptocli find --symbol btc
-```
-
 - fetch last trade price for a given cryptocurrency symbol:
 
 ```shell
@@ -39,6 +33,5 @@ docker run bonjoursoftware/cryptocli --help
 Tip: the `--help` argument also works on subcommands:
 
 ```shell
-docker run bonjoursoftware/cryptocli find --help
 docker run bonjoursoftware/cryptocli price --help
 ```

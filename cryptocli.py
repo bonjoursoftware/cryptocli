@@ -37,10 +37,6 @@ def parse_args() -> None:
 
     subparsers = parser.add_subparsers()
 
-    find_parser = subparsers.add_parser("find")
-    find_parser.add_argument("-s", "--symbol", type=str, required=True, help="cryptocurrency symbol")
-    find_parser.set_defaults(func=find_symbols)
-
     price_parser = subparsers.add_parser("price")
     price_parser.add_argument("-s", "--symbol", type=str, help="cryptocurrency symbol", default="BTC-GBP")
     price_parser.add_argument("-t", "--ticker", type=int, help="ticker interval in seconds")
@@ -61,13 +57,6 @@ def watch_last_trade_price(args: Namespace):
 def last_trade_price(symbol: str) -> None:
     try:
         print(Cryptocurrency().last_trade_price(symbol))
-    except CryptoCLIException as ex:
-        print(ex)
-
-
-def find_symbols(args: Namespace) -> None:
-    try:
-        print(Cryptocurrency().find_symbols(args.symbol))
     except CryptoCLIException as ex:
         print(ex)
 
