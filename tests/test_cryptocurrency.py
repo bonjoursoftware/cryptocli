@@ -33,20 +33,19 @@ class TestLastTradePrice(TestCase):
     def test_known_symbol(self) -> None:
         httpretty.register_uri(
             method=httpretty.GET,
-            uri="https://api.blockchain.com/v3/exchange/tickers/BTC-USD",
-            body='{"symbol": "BTC-USD", "price_24h": 57400.6, "volume_24h": 1010.255527, "last_trade_price": 54864.4}',
-            content_type="text/json",
+            uri="https://duckduckgo.com/js/spice/cryptocurrency/BTC/USD/1",
+            body='ddg_spice_cryptocurrency(\n{"data":{"amount":1,"id":1,"last_updated":"2025-10-29T16:02:00.000Z","name":"Bitcoin","quote":{"2781":{"last_updat'
+            'ed":"2025-10-29T16:04:04.000Z","price":111434.752497096}},"symbol":"BTC"},"status":{"error_code":0,"timestamp":"2025-10-29T16:04:56.980Z"}});',
         )
-        assert {"symbol": "BTC-USD", "last_trade_price": 54864.4} == Cryptocurrency().last_trade_price("BTC-USD")
+        assert {"symbol": "BTC-USD", "last_trade_price": 111434.752497096} == Cryptocurrency().last_trade_price("BTC-USD")
 
     @httpretty.activate
     def test_unknown_symbol(self) -> None:
         httpretty.register_uri(
             method=httpretty.GET,
-            uri="https://api.blockchain.com/v3/exchange/tickers/BTC-XXX",
-            body='{"error": "Internal Server Error"}',
-            content_type="text/json",
-            status=500,
+            uri="https://duckduckgo.com/js/spice/cryptocurrency/BTC/XXX/1",
+            body='ddg_spice_cryptocurrency(\n{"error":"internal"});',
+            status=400,
         )
         with raises(CryptoCLIException):
             Cryptocurrency().last_trade_price("BTC-XXX")
