@@ -2,7 +2,6 @@
 
 [![CI](https://github.com/bonjoursoftware/cryptocli/actions/workflows/main.yml/badge.svg)](https://github.com/bonjoursoftware/cryptocli/actions/workflows/main.yml)
 [![CodeQL](https://github.com/bonjoursoftware/cryptocli/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/bonjoursoftware/cryptocli/actions/workflows/codeql-analysis.yml)
-[![Docker Build](https://img.shields.io/docker/cloud/build/bonjoursoftware/cryptocli.svg)](https://hub.docker.com/r/bonjoursoftware/cryptocli/builds)
 
 [Bonjour Software](https://bonjour.software) CryptoCLI is a cryptocurrency command-line tool.
 
