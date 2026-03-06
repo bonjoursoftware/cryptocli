@@ -3,7 +3,7 @@
 #
 # https://github.com/bonjoursoftware/cryptocli
 #
-# Copyright (C) 2021 - 2025 Bonjour Software Limited
+# Copyright (C) 2021 - 2026 Bonjour Software Limited
 #
 # https://bonjoursoftware.com/
 #
