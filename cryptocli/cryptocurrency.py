@@ -20,20 +20,22 @@
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/cryptocli/blob/master/LICENSE
 from json import loads
-from requests import get
-from requests.exceptions import RequestException
 from typing import Any, Callable, Dict
 
+from requests import get
+from requests.exceptions import RequestException
+
+from cryptocli import _raise
 from cryptocli.exceptions import CryptoCLIException
 
 
 class Cryptocurrency:
     def price(self, symbol: str) -> Dict[str, Any]:
         return self._get(
-            url=f"https://duckduckgo.com/js/spice/cryptocurrency/{symbol.split('-')[0]}/{symbol.split('-')[1]}/1",
+            url=f"https://duckduckgo.com/js/spice/currency_convert/1/{symbol.split('-')[0]}/{symbol.split('-')[1]}",
             read_response=lambda response: {
                 "symbol": symbol,
-                "price": float(next(iter(loads(response)["data"]["quote"].values()))["price"]),
+                "price": float(next(iter(loads(response)["to"]))["mid"]),
             },
             error_msg=f"unable to fetch {symbol} last trade price",
         )
@@ -43,6 +45,6 @@ class Cryptocurrency:
         try:
             response = get(url=url)
             response.raise_for_status()
-            return read_response(response.text.replace("ddg_spice_cryptocurrency(\n", "").replace(");", ""))
+            return read_response(response.text) if response.json()["to"] else _raise(CryptoCLIException(f"{error_msg}: unknown symbol"))
         except RequestException as ex:
             raise CryptoCLIException(f"{error_msg}: {ex}") from None

@@ -19,10 +19,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/cryptocli/blob/master/LICENSE
-import httpretty
-
-from pytest import raises
 from unittest import TestCase
+
+import httpretty
+from pytest import raises
 
 from cryptocli.cryptocurrency import Cryptocurrency
 from cryptocli.exceptions import CryptoCLIException
@@ -33,19 +33,28 @@ class TestLastTradePrice(TestCase):
     def test_known_symbol(self) -> None:
         httpretty.register_uri(
             method=httpretty.GET,
-            uri="https://duckduckgo.com/js/spice/cryptocurrency/BTC/USD/1",
-            body='ddg_spice_cryptocurrency(\n{"data":{"amount":1,"id":1,"last_updated":"2025-10-29T16:02:00.000Z","name":"Bitcoin","quote":{"2781":{"last_updat'
-            'ed":"2025-10-29T16:04:04.000Z","price":111434.752497096}},"symbol":"BTC"},"status":{"error_code":0,"timestamp":"2025-10-29T16:04:56.980Z"}});',
+            uri="https://duckduckgo.com/js/spice/currency_convert/1/BTC/GBP",
+            body='{"from":"BTC","amount":1.0,"to":[{"quotecurrency":"GBP","mid":52895.8485534152}]}',
         )
-        assert {"symbol": "BTC-USD", "price": 111434.752497096} == Cryptocurrency().price("BTC-USD")
+        assert {"symbol": "BTC-GBP", "price": 52895.8485534152} == Cryptocurrency().price("BTC-GBP")
 
     @httpretty.activate
     def test_unknown_symbol(self) -> None:
         httpretty.register_uri(
             method=httpretty.GET,
-            uri="https://duckduckgo.com/js/spice/cryptocurrency/BTC/XXX/1",
-            body='ddg_spice_cryptocurrency(\n{"error":"internal"});',
-            status=400,
+            uri="https://duckduckgo.com/js/spice/currency_convert/1/BTC/XXX",
+            body='{"from":"BTC","amount":1.0,"to":[]}',
+            status=200,
         )
         with raises(CryptoCLIException):
             Cryptocurrency().price("BTC-XXX")
+
+    @httpretty.activate
+    def test_request_exception(self) -> None:
+        httpretty.register_uri(
+            method=httpretty.GET,
+            uri="https://duckduckgo.com/js/spice/currency_convert/1/???/XXX",
+            status=500,
+        )
+        with raises(CryptoCLIException):
+            Cryptocurrency().price("???-XXX")
