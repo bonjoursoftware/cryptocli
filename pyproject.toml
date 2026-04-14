@@ -1,0 +1,28 @@
+[project]
+name = "cryptocli"
+version = "1.0.0"
+requires-python = ">=3.14"
+
+[tool.poetry]
+description = "CryptoCLI is a cryptocurrency command-line tool that can fetch real-time crypto prices."
+license = "GPL-3.0-only"
+authors = ["Antoine <achatain@users.noreply.github.com>"]
+homepage = "https://bonjour.software"
+repository = "https://github.com/bonjoursoftware/cryptocli"
+package-mode = false
+
+[tool.poetry.dependencies]
+requests = "2.33.1"
+urllib3 = "2.6.3"
+
+[tool.poetry.group.dev.dependencies]
+black = "26.3.1"
+flake8 = "7.3.0"
+httpretty = "1.1.4"
+mypy = "1.20.1"
+pytest = "9.0.3"
+pytest-cov = "7.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
